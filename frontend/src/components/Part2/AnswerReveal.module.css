@@ -1,0 +1,89 @@
+/* Answer Reveal Styles - with Blur Effect */
+
+:root {
+  --rtrnp-text: #212121;
+  --rtrnp-border: #E0E0E0;
+  --rtrnp-green: #2E7D32;
+  --rtrnp-blue: #1565C0;
+}
+
+.answerReveal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--rtrnp-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.answerText {
+  padding: 12px 14px;
+  background: #f0f4ff;
+  border-radius: 6px;
+  border: 1px solid #e0e7ff;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--rtrnp-text);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+  filter: blur(6px);
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.answerText:hover:not(.revealed) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  filter: blur(5px);
+}
+
+.answerText.revealed {
+  filter: blur(0);
+  background: #e8f5e9;
+  border-color: var(--rtrnp-green);
+}
+
+.hint {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  font-style: italic;
+}
+
+.answerText.revealed ~ .hint {
+  display: none;
+}
+
+.revealedIndicator {
+  font-size: 12px;
+  color: var(--rtrnp-green);
+  font-weight: 700;
+  text-align: center;
+  display: none;
+}
+
+.answerText.revealed ~ .revealedIndicator {
+  display: block;
+}
+
+/* Animation for blur removal */
+@keyframes blurReveal {
+  from {
+    filter: blur(6px);
+  }
+  to {
+    filter: blur(0);
+  }
+}
+
+.answerText.revealed {
+  animation: blurReveal 0.4s ease;
+}

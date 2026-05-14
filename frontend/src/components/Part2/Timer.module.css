@@ -1,0 +1,75 @@
+/* Timer Styles */
+
+:root {
+  --rtrnp-text: #212121;
+  --rtrnp-text-light: #757575;
+  --rtrnp-red: #C62828;
+  --rtrnp-orange: #E65100;
+}
+
+.timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--rtrnp-text);
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.icon {
+  font-size: 22px;
+  animation: pulse 2s infinite;
+}
+
+.time {
+  letter-spacing: 1px;
+  min-width: 80px;
+  text-align: right;
+}
+
+.timer.low {
+  color: var(--rtrnp-orange);
+  background: rgba(230, 81, 0, 0.05);
+}
+
+.timer.low .icon {
+  animation: pulse 1s infinite;
+}
+
+.timer.critical {
+  color: var(--rtrnp-red);
+  background: rgba(198, 40, 40, 0.05);
+}
+
+.timer.critical .icon {
+  animation: blink 0.5s infinite;
+}
+
+.timer.critical .time {
+  font-weight: 900;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes blink {
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0.5;
+  }
+}

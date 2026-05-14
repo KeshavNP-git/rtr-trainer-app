@@ -1,0 +1,405 @@
+.pilotStation {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #fff;
+  font-family: 'Courier New', monospace;
+}
+
+.header {
+  background: rgba(0, 0, 0, 0.5);
+  border-bottom: 2px solid #00ffff;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.headerTx {
+  background: rgba(120, 0, 0, 0.45);
+  border-bottom-color: #ff3333;
+  box-shadow: 0 3px 18px rgba(255, 40, 40, 0.5);
+  animation: headerTxGlow 0.7s infinite alternate;
+}
+
+.headerRx {
+  background: rgba(0, 60, 90, 0.45);
+  border-bottom-color: #00ccff;
+  box-shadow: 0 3px 12px rgba(0, 200, 255, 0.35);
+}
+
+.liveIndicator {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 30, 30, 0.2);
+  border: 1px solid #ff3333;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ff6666;
+  letter-spacing: 1px;
+  animation: txGlowPill 0.7s infinite alternate;
+}
+
+.liveRx {
+  background: rgba(0, 180, 255, 0.15);
+  border-color: #00aaff;
+  color: #55ddff;
+  animation: none;
+}
+
+.liveRedDot {
+  width: 10px; height: 10px;
+  background: #ff2222; border-radius: 50%;
+  box-shadow: 0 0 6px #ff2222;
+  animation: dotBlink 0.6s infinite;
+  flex-shrink: 0;
+}
+
+.liveCyanDot {
+  width: 10px; height: 10px;
+  background: #00ccff; border-radius: 50%;
+  box-shadow: 0 0 6px #00ccff;
+  animation: rxBlink 0.8s infinite;
+  flex-shrink: 0;
+}
+
+.liveBars { display: flex; align-items: center; gap: 2px; height: 16px; }
+.liveBars b {
+  display: inline-block; width: 3px; border-radius: 2px;
+  background: #ff4444; box-shadow: 0 0 3px #ff2222;
+  animation: barDanceH 0.5s var(--d, 0s) infinite ease-in-out alternate;
+}
+.liveRxBars { display: flex; align-items: center; gap: 2px; height: 16px; }
+.liveRxBars b {
+  display: inline-block; width: 3px; border-radius: 2px;
+  background: #00ccff; box-shadow: 0 0 3px #00aadd;
+  animation: barDanceH 0.65s var(--d, 0s) infinite ease-in-out alternate;
+}
+
+@keyframes barDanceH {
+  from { height: 3px; }
+  to   { height: 16px; }
+}
+@keyframes dotBlink {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px #ff2222; }
+  50%       { opacity: 0.25; box-shadow: none; }
+}
+@keyframes rxBlink {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px #00ccff; }
+  50%       { opacity: 0.3; box-shadow: none; }
+}
+@keyframes txGlowPill {
+  from { box-shadow: 0 0 6px rgba(255,40,40,0.4); }
+  to   { box-shadow: 0 0 16px rgba(255,40,40,0.9); }
+}
+@keyframes headerTxGlow {
+  from { box-shadow: 0 3px 10px rgba(255,40,40,0.4); }
+  to   { box-shadow: 0 3px 28px rgba(255,40,40,0.8); }
+}
+
+.header h2 {
+  font-size: 24px;
+  margin: 0;
+  color: #00ffff;
+}
+
+.callsign {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  margin: 0 20px;
+}
+
+.status {
+  font-weight: bold;
+}
+
+.online {
+  color: #00ff00;
+}
+
+.offline {
+  color: #ff4444;
+}
+
+.mainPanel {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr 1fr;
+  gap: 10px;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.transmissionMonitor {
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid #00ffff;
+  border-radius: 5px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.transmissionMonitor h3 {
+  margin: 0 0 15px 0;
+  color: #00ffff;
+  font-size: 16px;
+}
+
+.displayBox {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activeTransmission,
+.receivedTransmission,
+.waiting {
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+}
+
+.activeTransmission {
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 0, 0.1));
+  border: 2px solid #00ffff;
+  border-radius: 10px;
+}
+
+.indicator {
+  font-size: 40px;
+  margin-bottom: 10px;
+  animation: blink 0.5s infinite;
+}
+
+.speaker {
+  font-size: 20px;
+  font-weight: bold;
+  color: #00ffff;
+  margin-bottom: 10px;
+}
+
+.role {
+  font-size: 14px;
+  color: #888;
+  margin-left: 10px;
+}
+
+.waveform {
+  font-size: 24px;
+  letter-spacing: 5px;
+  color: #00ff00;
+  animation: wave 0.5s infinite;
+}
+
+.receivedTransmission {
+  background: rgba(0, 255, 0, 0.1);
+  border: 2px solid #00ff00;
+  border-radius: 10px;
+}
+
+.from {
+  font-size: 16px;
+  font-weight: bold;
+  color: #00ff00;
+  margin-bottom: 15px;
+}
+
+.text {
+  font-size: 18px;
+  color: #ddd;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  word-wrap: break-word;
+}
+
+.received {
+  font-size: 12px;
+  color: #888;
+}
+
+.waiting {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px dashed #666;
+  border-radius: 10px;
+}
+
+.waiting p {
+  margin: 10px 0;
+  color: #888;
+  font-size: 16px;
+}
+
+.hint {
+  font-size: 12px;
+  color: #666;
+}
+
+.controlPanel {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #00ffff;
+  border-radius: 5px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.listenControl,
+.readbackControl,
+.history {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.listenControl h3,
+.readbackControl h3,
+.history h3 {
+  margin: 0;
+  color: #00ffff;
+  font-size: 14px;
+}
+
+.listenBtn {
+  padding: 12px;
+  background: rgba(0, 255, 0, 0.1);
+  color: #00ff00;
+  border: 2px solid #00ff00;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.listenBtn.active {
+  background: #00ff00;
+  color: #000;
+}
+
+.listenBtn:hover {
+  transform: scale(1.02);
+}
+
+.readbackBtn {
+  padding: 14px;
+  background: #00ffff;
+  color: #000;
+  border: 2px solid #00ffff;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.readbackBtn:hover:not(:disabled) {
+  background: #00dddd;
+  transform: scale(1.02);
+}
+
+.readbackBtn.recording {
+  background: #ff4444;
+  border-color: #ff4444;
+  color: #fff;
+  animation: recordingPulse 0.5s infinite;
+}
+
+.readbackBtn:disabled {
+  background: #666;
+  border-color: #666;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.history {
+  flex: 1;
+  overflow: hidden;
+}
+
+.historyList {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.historyItem {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px;
+  border-left: 3px solid #00ffff;
+  border-radius: 3px;
+  font-size: 11px;
+  display: flex;
+  gap: 8px;
+}
+
+.time {
+  color: #888;
+  flex-shrink: 0;
+}
+
+.text {
+  color: #ddd;
+  flex: 1;
+  word-wrap: break-word;
+}
+
+.empty {
+  color: #666;
+  font-style: italic;
+  padding: 10px;
+  text-align: center;
+  margin: 0;
+}
+
+.sessionInfo {
+  background: rgba(0, 0, 0, 0.5);
+  border-top: 1px solid #00ffff;
+  padding: 10px;
+  text-align: center;
+  font-size: 12px;
+  color: #888;
+}
+
+@keyframes blink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0.5; }
+}
+
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.5); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes recordingPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00ffff;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00dddd;
+}

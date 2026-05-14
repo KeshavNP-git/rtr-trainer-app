@@ -1,0 +1,38 @@
+:root{--bg:#0f1720;--bgLight:#f6f3ef;--text:#0b1b22;--textMuted:#6f7577;--accent:#ffd86b;--dark:#1a2332}
+.shell{display:flex;flex-direction:column;height:100%;background:#f5f2ee}
+.topCategories{display:flex;flex-wrap:wrap;gap:10px;padding:12px 18px;background:#1a2332;border-bottom:1px solid #334;overflow-x:auto}
+.catBtn{background:#3a4a5a;color:#fff;border:1px solid #4a5a6a;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:700;font-size:13px;transition:all .2s}
+.catBtn:hover{background:#4a5a6a}
+.catBtnActive{background:var(--accent);color:#000;border-color:var(--accent)}
+.container{display:grid;grid-template-columns:320px 1fr;gap:0;flex:1;overflow:hidden}
+.leftList{background:#fff;border-right:1px solid #ddd;overflow-y:auto;padding:0}
+.listHeader{font-weight:900;padding:12px;border-bottom:1px solid #ddd;background:#f9f7f4;font-size:12px;letter-spacing:1px}
+.itemsList{display:flex;flex-direction:column}
+.listItem{padding:10px 12px;cursor:pointer;border-bottom:1px solid #f0ede8;transition:all .2s;display:flex;gap:10px;align-items:center}
+.listItem:hover{background:#f9f7f4}
+.listItemActive{background:#1a2332;color:#fff}
+.itemNum{width:32px;height:32px;background:#e8e4df;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+.listItemActive .itemNum{background:var(--accent);color:#000}
+.itemName{flex:1;font-size:14px}
+.rightDetail{flex:1;overflow-y:auto;padding:20px;background:#fff}
+.detailHeader{display:flex;gap:12px;align-items:flex-start;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid #333}
+.badge{width:40px;height:40px;background:#1a2332;color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;flex-shrink:0}
+.detailHeader h2{font-size:24px;font-weight:900;color:#0b1b22;margin:0}
+.whenToUse{background:#f9f7f4;padding:14px;border-radius:10px;margin-bottom:18px}
+.whenLabel{font-weight:800;margin-bottom:8px;color:#0b1b22;font-size:12px;letter-spacing:1px}
+.whenText{color:#33414a;line-height:1.6;font-size:14px}
+.transmissionBoxes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.boxPilot{background:var(--accent);border:2px solid var(--accent);border-radius:10px;padding:14px}
+.boxATC{background:#fff;border:2px solid #ddd;border-radius:10px;padding:14px}
+.boxLabel{font-weight:800;margin-bottom:8px;font-size:11px;letter-spacing:1px;color:#6f7577}
+.boxPilot .boxLabel{color:#8b6914}
+.boxContent{font-family:var(--font-mono,Menlo);font-size:13px;color:#0b1b22;line-height:1.5}
+.exampleConv{margin-top:20px;padding-top:20px;border-top:1px solid #ddd}
+.exampleLabel{font-weight:800;margin-bottom:12px;font-size:12px;letter-spacing:1px;color:#6f7577}
+.exampleRef{float:right;font-weight:700;color:#999;font-size:11px}
+.convBubbles{display:flex;flex-direction:column;gap:10px}
+.bubble{padding:12px;border-radius:10px;max-width:100%}
+.bubblePILOT{background:var(--accent);color:#0b1b22}
+.bubbleATC{background:#1a2332;color:#fff}
+.bubbleLabel{font-weight:700;font-size:11px;margin-bottom:6px;opacity:.8}
+.bubbleText{font-family:var(--font-mono,Menlo);font-size:14px;line-height:1.5}

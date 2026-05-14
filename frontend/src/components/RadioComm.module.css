@@ -1,0 +1,615 @@
+/* ═══════════════════════════════════════════════════════════════ */
+/* AVIATION RADIO — PTT (Push-To-Talk) UI */
+/* Clean, Large Fonts, Impressive Layout */
+/* ═══════════════════════════════════════════════════════════════ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html, #root {
+  height: 100%;
+  width: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0a1929 0%, #1a237e 100%);
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* SETUP SCREEN */
+/* ─────────────────────────────────────────────────────────────── */
+
+.setupWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #0a1929 0%, #1a237e 100%);
+  padding: 20px;
+}
+
+.setupContainer {
+  background: white;
+  border-radius: 20px;
+  padding: 50px 60px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.setupHeader {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.radioIcon {
+  font-size: 80px;
+  margin-bottom: 20px;
+  display: block;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.setupTitle {
+  font-size: 44px;
+  font-weight: 700;
+  color: #0a1929;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+
+.setupSub {
+  font-size: 18px;
+  color: #1a237e;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.setupForm {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formLabel {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0a1929;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.formInput {
+  padding: 16px 18px;
+  font-size: 18px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #1a237e;
+  box-shadow: 0 0 0 4px rgba(26, 35, 126, 0.1);
+}
+
+.formInput::placeholder {
+  color: #999;
+  font-size: 16px;
+}
+
+.roleSelect {
+  display: flex;
+  gap: 12px;
+}
+
+.roleBtn {
+  flex: 1;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.roleBtn:hover {
+  border-color: #1a237e;
+  background: #f5f5f5;
+}
+
+.roleActive {
+  background: #1a237e !important;
+  color: white !important;
+  border-color: #1a237e !important;
+}
+
+.joinBtn {
+  padding: 18px 30px;
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+  margin-top: 10px;
+}
+
+.joinBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(26, 35, 126, 0.3);
+}
+
+.joinBtn:active {
+  transform: translateY(0);
+}
+
+.setupFooter {
+  text-align: center;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 25px;
+}
+
+.setupFooter p {
+  font-size: 16px;
+  color: #666;
+  margin: 8px 0;
+  font-weight: 500;
+}
+
+.errorBanner {
+  background: #ffebee;
+  border-left: 4px solid #d32f2f;
+  padding: 18px 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+}
+
+.errorBanner p {
+  font-size: 16px;
+  color: #d32f2f;
+  margin: 6px 0;
+  font-weight: 500;
+}
+
+.errorBanner strong {
+  font-weight: 700;
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* WAITING / CONNECTING SCREEN */
+/* ─────────────────────────────────────────────────────────────── */
+
+.waitingWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #0a1929 0%, #1a237e 100%);
+  padding: 20px;
+}
+
+.waitingContainer {
+  text-align: center;
+}
+
+.waitingTitle {
+  font-size: 48px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+.waitingDesc {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 40px;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  margin: 40px auto;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* CONNECTED SCREEN - MAIN LAYOUT */
+/* ─────────────────────────────────────────────────────────────── */
+
+.connectedWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #0a1929 0%, #1a237e 100%);
+  color: white;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* REMOTE PANEL (TOP) */
+/* ─────────────────────────────────────────────────────────────── */
+
+.remotePanel {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom: 3px solid #64b5f6;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 30px 40px;
+  min-height: 200px;
+}
+
+.remoteHeader {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.roleIcon {
+  font-size: 56px;
+  min-width: 70px;
+  text-align: center;
+}
+
+.remoteInfo,
+.localInfo {
+  flex: 1;
+}
+
+.remoteName,
+.localName {
+  font-size: 48px;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.remoteRole,
+.localRole {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 8px 0 0 0;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.remoteCenter,
+.localCenter {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.transmittingBadge,
+.idleBadge {
+  font-size: 36px;
+  font-weight: 800;
+  padding: 20px 30px;
+  border-radius: 12px;
+  display: inline-block;
+  width: fit-content;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.transmittingBadge {
+  background: rgba(211, 47, 47, 0.3);
+  color: #ff6b6b;
+  border: 2px solid #ff6b6b;
+}
+
+.idleBadge {
+  background: rgba(56, 142, 60, 0.3);
+  color: #81c784;
+  border: 2px solid #81c784;
+}
+
+.levelBar {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.levelFill {
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50 0%, #8bc34a 100%);
+  transition: width 0.05s linear;
+  border-radius: 6px;
+}
+
+.remoteStats,
+.localStats {
+  display: flex;
+  gap: 50px;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 25px;
+}
+
+.remoteStats p,
+.localStats p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.remoteStats strong,
+.localStats strong {
+  font-weight: 800;
+  color: white;
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* PTT BUTTON (CENTER) */
+/* ─────────────────────────────────────────────────────────────── */
+
+.pttCenter {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.pttButton {
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  border: 6px solid #64b5f6;
+  background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s ease;
+  box-shadow: 0 0 50px rgba(100, 181, 246, 0.5);
+  user-select: none;
+  position: relative;
+}
+
+.pttButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 40px rgba(100, 181, 246, 0.5);
+}
+
+.pttButton:active,
+.pttActive {
+  background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%) !important;
+  border-color: #ff5252 !important;
+  transform: scale(0.95);
+  box-shadow: 0 0 50px rgba(255, 82, 82, 0.6) !important;
+}
+
+.pttText {
+  font-size: 72px;
+  font-weight: 900;
+  color: white;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.pttHint {
+  font-size: 28px;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* LOCAL PANEL (BOTTOM) */
+/* ─────────────────────────────────────────────────────────────── */
+
+.localPanel {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border-top: 3px solid #ffb74d;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 30px 40px;
+  min-height: 200px;
+}
+
+.localHeader {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* DISCONNECT BUTTON */
+/* ─────────────────────────────────────────────────────────────── */
+
+.disconnectBtn {
+  margin-top: auto;
+  padding: 18px 36px;
+  font-size: 22px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 2px;
+  align-self: flex-start;
+  text-transform: uppercase;
+}
+
+.disconnectBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(211, 47, 47, 0.4);
+}
+
+.disconnectBtn:active {
+  transform: translateY(0);
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* RESPONSIVE DESIGN */
+/* ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .setupContainer {
+    padding: 40px 30px;
+  }
+
+  .setupTitle {
+    font-size: 36px;
+  }
+
+  .radioIcon {
+    font-size: 60px;
+  }
+
+  .remoteName,
+  .localName {
+    font-size: 28px;
+  }
+
+  .remoteRole,
+  .localRole {
+    font-size: 16px;
+  }
+
+  .pttButton {
+    width: 150px;
+    height: 150px;
+  }
+
+  .pttText {
+    font-size: 44px;
+  }
+
+  .pttHint {
+    font-size: 16px;
+  }
+
+  .remoteHeader,
+  .localHeader {
+    gap: 15px;
+  }
+
+  .remoteStats,
+  .localStats {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .transmittingBadge,
+  .idleBadge {
+    font-size: 24px;
+  }
+
+  .roleIcon {
+    font-size: 44px;
+    min-width: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .setupContainer {
+    padding: 30px 20px;
+  }
+
+  .setupTitle {
+    font-size: 28px;
+  }
+
+  .radioIcon {
+    font-size: 48px;
+  }
+
+  .pttButton {
+    width: 120px;
+    height: 120px;
+  }
+
+  .pttText {
+    font-size: 36px;
+  }
+
+  .remoteName,
+  .localName {
+    font-size: 22px;
+  }
+
+  .formInput {
+    font-size: 16px;
+    padding: 14px;
+  }
+
+  .joinBtn {
+    font-size: 18px;
+    padding: 16px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* ANIMATIONS */
+/* ─────────────────────────────────────────────────────────────── */
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(100, 181, 246, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(100, 181, 246, 0.8);
+  }
+}
+
+.pttButton {
+  animation: glow 2s ease-in-out infinite;
+}

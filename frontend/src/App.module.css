@@ -1,0 +1,121 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Nav ── */
+.nav {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  height: 52px;
+  flex-shrink: 0;
+  gap: 0;
+  position: relative;
+  z-index: 50;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 28px;
+}
+.brandIcon {
+  font-size: 22px;
+  color: var(--green);
+  text-shadow: 0 0 12px rgba(0,255,136,.5);
+}
+.brandTitle {
+  font-family: var(--font-hud);
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--green);
+  letter-spacing: 4px;
+  text-shadow: 0 0 10px rgba(0,255,136,.35);
+  line-height: 1;
+}
+.brandSub {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  margin-top: 2px;
+}
+
+.tabs {
+  display: flex;
+  height: 100%;
+}
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 20px;
+  height: 100%;
+  font-family: var(--font-hud);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all .2s;
+}
+.tab:hover { color: var(--text); }
+.tabActive  { color: var(--green) !important; border-bottom-color: var(--green) !important; }
+.tabNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 3px;
+  background: var(--border);
+  font-size: 9px;
+}
+.tabActive .tabNum {
+  background: var(--green-dark);
+  color: var(--green);
+}
+
+.navRight {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.led {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+}
+.ledDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.ledGreen { background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse-glow 2s infinite; }
+.ledAmber { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+.clock {
+  font-family: var(--font-hud);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 2px;
+}
+
+.main {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}

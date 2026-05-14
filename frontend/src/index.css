@@ -1,0 +1,102 @@
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── CSS Variables ── */
+:root {
+  --green:     #00ff88;
+  --green-dim: #00cc66;
+  --green-dark:#002a1a;
+  --amber:     #ffb300;
+  --amber-dim: #cc8800;
+  --red:       #ff3355;
+  --red-dim:   #cc1133;
+  --blue:      #44aaff;
+
+  --bg:        #030608;
+  --bg2:       #060c10;
+  --bg3:       #090f14;
+  --panel:     #0a1520;
+  --panel2:    #0e1e2c;
+  --border:    #112030;
+  --border2:   #1a3048;
+
+  --text:      #c0e8ff;
+  --text-dim:  #3a6080;
+  --text-mid:  #7aaac8;
+
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-hud:  'Orbitron', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  --radius:    6px;
+  --shadow:    0 4px 24px rgba(0,0,0,.6);
+}
+
+/* ── Base ── */
+html { font-size: 16px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* CRT scanline overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 200, 255, .007) 3px,
+    rgba(0, 200, 255, .007) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── Scrollbars ── */
+::-webkit-scrollbar          { width: 5px; height: 5px; }
+::-webkit-scrollbar-track    { background: var(--bg2); }
+::-webkit-scrollbar-thumb    { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ── Typography ── */
+h1, h2, h3 { font-family: var(--font-hud); letter-spacing: 2px; }
+
+/* ── Utilities ── */
+.mono { font-family: var(--font-mono); }
+.hud  { font-family: var(--font-hud); }
+.green  { color: var(--green); }
+.amber  { color: var(--amber); }
+.red    { color: var(--red); }
+.blue   { color: var(--blue); }
+.dim    { color: var(--text-dim); }
+.mid    { color: var(--text-mid); }
+
+/* ── Animations ── */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .35; }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes ring-pulse {
+  0%   { transform: scale(1);    opacity: .9; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+@keyframes typing-dot {
+  0%, 100% { opacity: .2; transform: translateY(0); }
+  50%       { opacity: 1;  transform: translateY(-3px); }
+}
+@keyframes wave-scan {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.fade-up { animation: fade-up .25s ease both; }

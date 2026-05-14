@@ -1,0 +1,330 @@
+.atcStation {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #fff;
+  font-family: 'Courier New', monospace;
+}
+
+.header {
+  background: rgba(0, 0, 0, 0.5);
+  border-bottom: 2px solid #00ff00;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.headerTx {
+  background: rgba(120, 0, 0, 0.45);
+  border-bottom-color: #ff3333;
+  box-shadow: 0 3px 18px rgba(255, 40, 40, 0.5);
+  animation: headerTxGlow 0.7s infinite alternate;
+}
+
+.headerRx {
+  background: rgba(0, 60, 90, 0.45);
+  border-bottom-color: #00ccff;
+  box-shadow: 0 3px 12px rgba(0, 200, 255, 0.35);
+}
+
+/* Live radio indicator pill */
+.liveIndicator {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 30, 30, 0.2);
+  border: 1px solid #ff3333;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ff6666;
+  letter-spacing: 1px;
+  animation: txGlowPill 0.7s infinite alternate;
+}
+
+.liveRx {
+  background: rgba(0, 180, 255, 0.15);
+  border-color: #00aaff;
+  color: #55ddff;
+  animation: none;
+}
+
+.liveRedDot {
+  width: 10px; height: 10px;
+  background: #ff2222;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #ff2222;
+  animation: dotBlink 0.6s infinite;
+  flex-shrink: 0;
+}
+
+.liveCyanDot {
+  width: 10px; height: 10px;
+  background: #00ccff;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #00ccff;
+  animation: rxBlink 0.8s infinite;
+  flex-shrink: 0;
+}
+
+.liveBars {
+  display: flex; align-items: center; gap: 2px; height: 16px;
+}
+.liveBars b, .liveRxBars b {
+  display: inline-block; width: 3px; border-radius: 2px;
+  animation: barDanceH 0.5s var(--d, 0s) infinite ease-in-out alternate;
+}
+.liveBars b { background: #ff4444; box-shadow: 0 0 3px #ff2222; }
+.liveRxBars { display: flex; align-items: center; gap: 2px; height: 16px; }
+.liveRxBars b { background: #00ccff; box-shadow: 0 0 3px #00aadd;
+  animation: barDanceH 0.65s var(--d, 0s) infinite ease-in-out alternate; }
+
+@keyframes barDanceH {
+  from { height: 3px; }
+  to   { height: 16px; }
+}
+
+@keyframes dotBlink {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px #ff2222; }
+  50%       { opacity: 0.25; box-shadow: none; }
+}
+
+@keyframes rxBlink {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px #00ccff; }
+  50%       { opacity: 0.3; box-shadow: none; }
+}
+
+@keyframes txGlowPill {
+  from { box-shadow: 0 0 6px rgba(255,40,40,0.4); }
+  to   { box-shadow: 0 0 16px rgba(255,40,40,0.9); }
+}
+
+@keyframes headerTxGlow {
+  from { box-shadow: 0 3px 10px rgba(255,40,40,0.4); }
+  to   { box-shadow: 0 3px 28px rgba(255,40,40,0.8); }
+}
+
+.header h2 {
+  font-size: 24px;
+  margin: 0;
+  color: #00ff00;
+}
+
+.callsign {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  margin: 0 20px;
+}
+
+.status {
+  font-weight: bold;
+}
+
+.online {
+  color: #00ff00;
+}
+
+.offline {
+  color: #ff4444;
+}
+
+.mainPanel {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr 1fr;
+  gap: 10px;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.transmissionLog {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #00ff00;
+  border-radius: 5px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.transmissionLog h3 {
+  margin: 0 0 10px 0;
+  color: #00ff00;
+  font-size: 14px;
+}
+
+.logContent {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.logContent div {
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-left: 3px solid #00ff00;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.systemMsg {
+  color: #888;
+  font-style: italic;
+}
+
+.transmissionItem,
+.readbackItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.speaker,
+.label {
+  color: #00ff00;
+  font-weight: bold;
+  font-size: 11px;
+}
+
+.text {
+  color: #ddd;
+  word-wrap: break-word;
+}
+
+.time {
+  color: #666;
+  font-size: 10px;
+}
+
+.controlPanel {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #00ff00;
+  border-radius: 5px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.recordingSection,
+.readbackMonitor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recordingSection h3,
+.readbackMonitor h3 {
+  margin: 0;
+  color: #00ff00;
+  font-size: 14px;
+}
+
+.recordBtn {
+  padding: 15px;
+  background: #ff0000;
+  color: #fff;
+  border: 2px solid #ff0000;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: pulse 2s infinite;
+}
+
+.recordBtn:hover:not(:disabled) {
+  background: #cc0000;
+  border-color: #ff6666;
+}
+
+.recordBtn.recording {
+  background: #ff4444;
+  animation: recordingPulse 0.5s infinite;
+}
+
+.recordBtn:disabled {
+  background: #666;
+  border-color: #666;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.hint {
+  font-size: 11px;
+  color: #888;
+  margin: 0;
+}
+
+.readbackList {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.readbackLine {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px;
+  border-left: 3px solid #00ffff;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.pilot {
+  color: #00ffff;
+  font-weight: bold;
+}
+
+.empty {
+  color: #666;
+  font-style: italic;
+  margin: 0;
+  padding: 10px;
+  text-align: center;
+}
+
+.sessionInfo {
+  background: rgba(0, 0, 0, 0.5);
+  border-top: 1px solid #00ff00;
+  padding: 10px;
+  text-align: center;
+  font-size: 12px;
+  color: #888;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes recordingPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00ff00;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00dd00;
+}
