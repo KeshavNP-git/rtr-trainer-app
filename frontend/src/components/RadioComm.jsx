@@ -364,7 +364,7 @@ export default function RadioComm() {
         <div className={styles.setupContainer}>
           <div className={styles.setupHeader}>
             <div className={styles.radioIcon}>📻</div>
-            <h1 className={styles.setupTitle}>AVIATION RADIO</h1>
+            <h1 className={styles.setupTitle}>RTR COMMUNICATION</h1>
             <p className={styles.setupSub}>PTT — Push To Talk</p>
           </div>
 
