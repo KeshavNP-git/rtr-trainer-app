@@ -1,0 +1,66 @@
+.waveformHorizontal {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  justify-content: center;
+  height: 30px;
+  padding: 0 8px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.waveformHorizontal.active {
+  opacity: 1;
+}
+
+.waveformVertical {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 4px 0;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.waveformVertical.active {
+  opacity: 1;
+}
+
+.barHorizontal {
+  width: 6px;
+  min-height: 4px;
+  border-radius: 1px;
+  transition: height 0.05s ease-out;
+  box-shadow: 0 0 2px currentColor;
+}
+
+.barHorizontal.red {
+  background: linear-gradient(to top, #ff3333, #ff6666);
+  color: #ff3333;
+}
+
+.barHorizontal.cyan {
+  background: linear-gradient(to top, #00ccff, #33ddff);
+  color: #00ccff;
+}
+
+.barVertical {
+  flex: 1;
+  min-width: 4px;
+  min-height: 4px;
+  border-radius: 1px;
+  transition: height 0.05s ease-out;
+  box-shadow: 0 0 2px currentColor;
+}
+
+.barVertical.red {
+  background: linear-gradient(to right, #ff3333, #ff6666);
+  color: #ff3333;
+}
+
+.barVertical.cyan {
+  background: linear-gradient(to right, #00ccff, #33ddff);
+  color: #00ccff;
+}

@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './PTTControl.module.css';
 import PTTAudioManager from '../utils/PTTAudioManager';
+import WaveformVisualizer from './WaveformVisualizer';
 
 export default function PTTControl({ socket, sessionId, userRole, displayName, otherUserOnline, onTransmitChange }) {
   const [isTransmitting, setIsTransmitting] = useState(false);
   const [micLevel, setMicLevel] = useState(0);
+  const [micFrequencies, setMicFrequencies] = useState([]);
   const [remoteTransmitting, setRemoteTransmitting] = useState(false);
   const [remoteUserName, setRemoteUserName] = useState('');
+  const [remoteFrequencies, setRemoteFrequencies] = useState([]);
   const [speakerVolume, setSpeakerVolume] = useState(100);
   const [micVolume, setMicVolume] = useState(100);
   const pttManagerRef = useRef(null);
@@ -23,23 +26,27 @@ export default function PTTControl({ socket, sessionId, userRole, displayName, o
     pttManagerRef.current = manager;
 
     // Listen for remote transmission start
-    socket.on('ptt-start', (data) => {
+    socket.on('ppt-start', (data) => {
       if (data.role !== userRole) {
         setRemoteTransmitting(true);
       }
     });
 
     // Listen for audio chunks from other user
-    socket.on('ptt-audio', (data) => {
+    socket.on('ppt-audio', (data) => {
       if (data.from !== userRole && pttManagerRef.current) {
-        pttManagerRef.current.playAudioChunk(data.audioData);
+        pttManagerRef.current.playAudioChunk(
+          data.audioData,
+          setRemoteFrequencies  // Pass callback for playback frequency monitoring
+        );
       }
     });
 
     // Listen for remote transmission end
-    socket.on('ptt-end', (data) => {
+    socket.on('ppt-end', (data) => {
       if (data.role !== userRole) {
         setRemoteTransmitting(false);
+        setRemoteFrequencies([]);  // Clear frequencies when transmission ends
       }
     });
 
@@ -52,9 +59,9 @@ export default function PTTControl({ socket, sessionId, userRole, displayName, o
     });
 
     return () => {
-      socket.off('ptt-start');
-      socket.off('ptt-audio');
-      socket.off('ptt-end');
+      socket.off('ppt-start');
+      socket.off('ppt-audio');
+      socket.off('ppt-end');
       socket.off('user-joined');
       if (pttManagerRef.current) {
         pttManagerRef.current.stop();
@@ -65,7 +72,15 @@ export default function PTTControl({ socket, sessionId, userRole, displayName, o
   const handlePTTMouseDown = async () => {
     if (!otherUserOnline) return;
     if (pttManagerRef.current) {
-      await pttManagerRef.current.startTransmit(setMicLevel);
+      await pttManagerRef.current.startTransmit((data) => {
+        if (typeof data === 'object' && data.frequencies) {
+          setMicLevel(data.level);
+          setMicFrequencies(data.frequencies);
+        } else {
+          // Fallback for old format
+          setMicLevel(data);
+        }
+      });
       setIsTransmitting(true);
       onTransmitChange && onTransmitChange(true);
     }
@@ -77,6 +92,7 @@ export default function PTTControl({ socket, sessionId, userRole, displayName, o
     }
     setIsTransmitting(false);
     setMicLevel(0);
+    setMicFrequencies([]);
     onTransmitChange && onTransmitChange(false);
   };
 
@@ -84,7 +100,15 @@ export default function PTTControl({ socket, sessionId, userRole, displayName, o
     e.preventDefault();
     if (!otherUserOnline) return;
     if (pttManagerRef.current) {
-      await pttManagerRef.current.startTransmit(setMicLevel);
+      await pttManagerRef.current.startTransmit((data) => {
+        if (typeof data === 'object' && data.frequencies) {
+          setMicLevel(data.level);
+          setMicFrequencies(data.frequencies);
+        } else {
+          // Fallback for old format
+          setMicLevel(data);
+        }
+      });
       setIsTransmitting(true);
       onTransmitChange && onTransmitChange(true);
     }
@@ -97,6 +121,7 @@ export default function PTTControl({ socket, sessionId, userRole, displayName, o
     }
     setIsTransmitting(false);
     setMicLevel(0);
+    setMicFrequencies([]);
     onTransmitChange && onTransmitChange(false);
   };
 
@@ -111,44 +136,42 @@ export default function PTTControl({ socket, sessionId, userRole, displayName, o
       }`}>
         {isTransmitting ? (
           <>
-            {/* Red "ON AIR" dot */}
             <span className={styles.onAirDot}></span>
             <span className={styles.onAirLabel}>ON AIR</span>
-            {/* Animated mic bars */}
-            <div className={styles.micBars}>
-              <span className={styles.bar} style={{'--delay':'0s'}}></span>
-              <span className={styles.bar} style={{'--delay':'0.1s'}}></span>
-              <span className={styles.bar} style={{'--delay':'0.2s'}}></span>
-              <span className={styles.bar} style={{'--delay':'0.15s'}}></span>
-              <span className={styles.bar} style={{'--delay':'0.05s'}}></span>
-            </div>
+            {/* Real-time reactive waveform for transmission */}
+            <WaveformVisualizer 
+              frequencyData={micFrequencies}
+              isActive={isTransmitting}
+              barCount={6}
+              color="red"
+            />
             <span className={styles.bannerText}>🎤 MIC ACTIVE — {displayName}</span>
-            <div className={styles.micBars}>
-              <span className={styles.bar} style={{'--delay':'0.05s'}}></span>
-              <span className={styles.bar} style={{'--delay':'0.15s'}}></span>
-              <span className={styles.bar} style={{'--delay':'0.2s'}}></span>
-              <span className={styles.bar} style={{'--delay':'0.1s'}}></span>
-              <span className={styles.bar} style={{'--delay':'0s'}}></span>
-            </div>
+            {/* Reverse waveform for symmetry */}
+            <WaveformVisualizer 
+              frequencyData={micFrequencies}
+              isActive={isTransmitting}
+              barCount={6}
+              color="red"
+            />
           </>
         ) : remoteTransmitting ? (
           <>
             <span className={styles.rxDot}></span>
-            <div className={styles.rxBars}>
-              <span className={styles.rxBar} style={{'--delay':'0s'}}></span>
-              <span className={styles.rxBar} style={{'--delay':'0.12s'}}></span>
-              <span className={styles.rxBar} style={{'--delay':'0.24s'}}></span>
-              <span className={styles.rxBar} style={{'--delay':'0.18s'}}></span>
-              <span className={styles.rxBar} style={{'--delay':'0.06s'}}></span>
-            </div>
+            {/* Real-time reactive waveform for receiving */}
+            <WaveformVisualizer 
+              frequencyData={remoteFrequencies}
+              isActive={remoteTransmitting}
+              barCount={6}
+              color="cyan"
+            />
             <span className={styles.bannerText}>📡 RECEIVING — {remoteUserName || 'Other Station'}</span>
-            <div className={styles.rxBars}>
-              <span className={styles.rxBar} style={{'--delay':'0.06s'}}></span>
-              <span className={styles.rxBar} style={{'--delay':'0.18s'}}></span>
-              <span className={styles.rxBar} style={{'--delay':'0.24s'}}></span>
-              <span className={styles.rxBar} style={{'--delay':'0.12s'}}></span>
-              <span className={styles.rxBar} style={{'--delay':'0s'}}></span>
-            </div>
+            {/* Reverse waveform for symmetry */}
+            <WaveformVisualizer 
+              frequencyData={remoteFrequencies}
+              isActive={remoteTransmitting}
+              barCount={6}
+              color="cyan"
+            />
             <span className={styles.rxDot}></span>
           </>
         ) : (

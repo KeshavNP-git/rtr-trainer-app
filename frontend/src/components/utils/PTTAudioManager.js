@@ -15,6 +15,10 @@ class PTTAudioManager {
     this.audioElements = [];
     this.micVolume = 100;
     this.speakerVolume = 100;
+    this.frequencyUpdateCallback = null;
+    this.playbackAnalyser = null;
+    this.playbackFrequencyCallback = null;
+    this.frequencyAnimationFrame = null;
   }
 
   async initAudio() {
@@ -73,9 +77,14 @@ class PTTAudioManager {
         if (!this.isTransmitting) return;
         const dataArray = new Uint8Array(this.analyser.frequencyBinCount);
         this.analyser.getByteFrequencyData(dataArray);
-        const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-        onAudioLevel(Math.min(100, (average / 255) * 100));
-        requestAnimationFrame(updateLevel);
+        
+        // Send actual frequency data array for waveform visualization
+        onAudioLevel({
+          level: Math.min(100, (dataArray.reduce((a, b) => a + b) / dataArray.length / 255) * 100),
+          frequencies: Array.from(dataArray)
+        });
+        
+        this.frequencyAnimationFrame = requestAnimationFrame(updateLevel);
       };
       updateLevel();
     }
@@ -98,8 +107,12 @@ class PTTAudioManager {
   stopTransmit() {
     if (!this.isTransmitting) return;
 
-    this.isTransmitting = false;
-
+    this.isTransmitting = false;    this.frequencyUpdateCallback = null;
+    
+    if (this.frequencyAnimationFrame) {
+      cancelAnimationFrame(this.frequencyAnimationFrame);
+      this.frequencyAnimationFrame = null;
+    }
     if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
       this.mediaRecorder.stop();
     }
@@ -113,7 +126,7 @@ class PTTAudioManager {
     console.log('[PTT] Transmission ended');
   }
 
-  playAudioChunk(base64Audio) {
+  playAudioChunk(base64Audio, onPlaybackFrequency = null) {
     try {
       const binaryString = atob(base64Audio);
       const bytes = new Uint8Array(binaryString.length);
@@ -128,6 +141,29 @@ class PTTAudioManager {
       audio.src = audioUrl;
       audio.volume = this.speakerVolume / 100;
 
+      // Set up playback frequency analysis if callback provided
+      if (onPlaybackFrequency && !this.playbackAnalyser) {
+        try {
+          const audioContext = this.audioContext || new (window.AudioContext || window.webkitAudioContext)();
+          this.playbackAnalyser = audioContext.createAnalyser();
+          const source = audioContext.createMediaElementAudioSource(audio);
+          source.connect(this.playbackAnalyser);
+          this.playbackAnalyser.connect(audioContext.destination);
+
+          // Start frequency monitoring
+          const monitorFrequency = () => {
+            if (!onPlaybackFrequency || !this.playbackAnalyser) return;
+            const dataArray = new Uint8Array(this.playbackAnalyser.frequencyBinCount);
+            this.playbackAnalyser.getByteFrequencyData(dataArray);
+            onPlaybackFrequency(Array.from(dataArray));
+            requestAnimationFrame(monitorFrequency);
+          };
+          monitorFrequency();
+        } catch (err) {
+          console.warn('[PTT] Could not set up playback frequency analysis:', err);
+        }
+      }
+
       // Play immediately with no buffering
       audio.play().catch((err) => {
         console.error('[PTT] Audio playback error:', err);
@@ -136,6 +172,7 @@ class PTTAudioManager {
       // Clean up after playback
       audio.onended = () => {
         URL.revokeObjectURL(audioUrl);
+        this.playbackAnalyser = null;
       };
     } catch (err) {
       console.error('[PTT] Error playing audio:', err);
