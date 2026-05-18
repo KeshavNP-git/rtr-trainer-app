@@ -1,0 +1,23 @@
+.waveformContainer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+  height: 60px;
+  margin: 16px 0;
+}
+
+.bar {
+  width: 8px;
+  min-height: 5px;
+  background: linear-gradient(to top, #00ff88, #00cc66);
+  border-radius: 4px;
+  transition: height 50ms ease-out;
+  opacity: 0.6;
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+}
+
+.bar.active {
+  opacity: 0.9;
+  box-shadow: 0 0 12px rgba(0, 255, 136, 0.6);
+}

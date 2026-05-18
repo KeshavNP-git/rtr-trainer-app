@@ -65,7 +65,8 @@ class PTTAudioManager {
 
     // Notify other user that transmission started
     this.socket.emit('ptt-start', {
-      sessionId: this.sessionId,
+      roomId: this.sessionId,  // Backend looks for roomId first
+      sessionId: this.sessionId,  // Fallback if roomId not found
       role: this.role,
     });
 
@@ -95,7 +96,8 @@ class PTTAudioManager {
     reader.onload = () => {
       const base64Audio = reader.result.split(',')[1];
       this.socket.emit('ptt-audio', {
-        sessionId: this.sessionId,
+        roomId: this.sessionId,  // Backend looks for roomId first
+        sessionId: this.sessionId,  // Fallback
         from: this.role,
         audioData: base64Audio,
         timestamp: Date.now(),

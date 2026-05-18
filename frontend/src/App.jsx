@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Simulator from './components/Simulator'
 import LearnModule from './components/LearnModule'
 import Part1 from './components/Part1'
@@ -6,7 +6,6 @@ import Part2 from './components/Part2'
 import LearnTransmissions from './components/LearnTransmissions'
 import RadioComm from './components/RadioComm'
 import styles from './App.module.css'
-import { useEffect } from 'react'
 import { startKeepAlive } from './services/api'
 
 export default function App() {
@@ -16,6 +15,11 @@ export default function App() {
   useEffect(() => {
     const id = startKeepAlive()
     return () => { if (id) clearInterval(id) }
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => setTime(getUTC()), 15000)
+    return () => clearInterval(interval)
   }, [])
 
   return (
@@ -88,11 +92,17 @@ export default function App() {
 }
 
 function Clock() {
-  const [time, setTime] = useState(getUTC())
-  setTimeout(() => setTime(getUTC()), 15000)
   function getUTC() {
     const n = new Date()
     return String(n.getUTCHours()).padStart(2,'0') + ':' + String(n.getUTCMinutes()).padStart(2,'0') + 'Z'
   }
+
+  const [time, setTime] = useState(getUTC)
+
+  useEffect(() => {
+    const interval = setInterval(() => setTime(getUTC()), 15000)
+    return () => clearInterval(interval)
+  }, [])
+
   return <div className={styles.clock}>{time}</div>
 }

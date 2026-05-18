@@ -89,26 +89,42 @@ function initializeRadioComm(io) {
     });
 
     // ── PTT (Push-To-Talk) Status ────────────────────────────
-    socket.on('ptt-start', ({ roomId }) => {
-      const room = rooms.get(roomId);
+    socket.on('ptt-start', ({ roomId, sessionId }) => {
+      const rid = roomId || sessionId;
+      const room = rooms.get(rid);
       if (!room) return;
       const user = room.users.get(socket.id);
       if (!user) return;
 
       // Broadcast PTT start to peer
-      io.to(roomId).except(socket.id).emit('ptt-start', {
+      io.to(rid).except(socket.id).emit('ptt-start', {
         socketId: socket.id,
         displayName: user.displayName,
         role: user.role,
       });
     });
 
-    socket.on('ptt-stop', ({ roomId }) => {
-      const room = rooms.get(roomId);
+    // Relay audio chunks to peer
+    socket.on('ptt-audio', ({ roomId, sessionId, from, audioData, timestamp }) => {
+      const rid = roomId || sessionId;
+      const room = rooms.get(rid);
+      if (!room) return;
+      // Forward audio data to other peers in the room
+      io.to(rid).except(socket.id).emit('ptt-audio', {
+        from,
+        audioData,
+        timestamp,
+      });
+    });
+
+    // End transmission
+    socket.on('ptt-end', ({ roomId, sessionId }) => {
+      const rid = roomId || sessionId;
+      const room = rooms.get(rid);
       if (!room) return;
 
-      // Broadcast PTT stop to peer
-      io.to(roomId).except(socket.id).emit('ptt-stop', {
+      // Broadcast PTT end to peer
+      io.to(rid).except(socket.id).emit('ptt-end', {
         socketId: socket.id,
       });
     });

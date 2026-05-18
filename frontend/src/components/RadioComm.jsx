@@ -5,9 +5,10 @@
  */
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { io } from 'socket.io-client';
+import { WaveformBars } from './RadioComm/WaveformBars';
 import styles from './RadioComm.module.css';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || undefined;
 
 const RTC_CONFIG = {
   iceServers: [
@@ -205,6 +206,10 @@ export default function RadioComm() {
       return;
     }
 
+    if (socketRef.current) {
+      disconnect();
+    }
+
     setError('');
     setAppState(STATE.CONNECTING);
 
@@ -233,7 +238,7 @@ export default function RadioComm() {
       }
     }
 
-    const socket = io(BACKEND_URL, {
+    const socket = io(BACKEND_URL ?? undefined, {
       // ✅ FIX: polling first so Render can upgrade to WebSocket properly
       // Render (and most reverse proxies) need the HTTP handshake before WS upgrade
       transports: ['polling', 'websocket'],
@@ -338,12 +343,18 @@ export default function RadioComm() {
     socket.emit('webrtc-offer', { targetSocketId, offer, fromDisplayName: displayName });
   }, [createPeerConnection, displayName]);
 
-  const disconnect = () => {
+  const disconnect = useCallback(() => {
     clearInterval(callTimerRef.current);
     cancelAnimationFrame(levelAnimRef.current);
     if (pcRef.current) { pcRef.current.close(); pcRef.current = null; }
-    if (localStreamRef.current) { localStreamRef.current.getTracks().forEach(t => t.stop()); }
-    if (socketRef.current) { socketRef.current.disconnect(); socketRef.current = null; }
+    if (localStreamRef.current) { localStreamRef.current.getTracks().forEach(t => t.stop()); localStreamRef.current = null; }
+    if (socketRef.current) {
+      socketRef.current.disconnect();
+      socketRef.current = null;
+    }
+    if (remoteAudioRef.current) {
+      remoteAudioRef.current.srcObject = null;
+    }
     setAppState(STATE.SETUP);
     setCallDuration(0);
     setPeerName('');
@@ -351,7 +362,11 @@ export default function RadioComm() {
     setRemoteLevel(0);
     setIsPTTActive(false);
     setRemoteIsPTTActive(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    return () => disconnect()
+  }, [disconnect]);
 
   const fmtDuration = (s) => {
     const m = Math.floor(s / 60).toString().padStart(2, '0');
@@ -466,13 +481,11 @@ export default function RadioComm() {
           <div className={styles.remoteCenter}>
             {remoteIsPTTActive ? (
               <>
-                <div className={styles.transmittingBadge}>🔴 RECEIVING</div>
-                <div className={styles.levelBar}>
-                  <div className={styles.levelFill} style={{ width: `${remoteLevel}%` }}></div>
-                </div>
+                <div className={styles.receivingBadge}>🔴 RECEIVING</div>
+                <WaveformBars level={remoteLevel} isActive={true} />
               </>
             ) : (
-              <div className={styles.idleBadge}>🔵 STANDBY</div>
+              <div className={styles.standbyBadge}>🔵 STANDBY</div>
             )}
           </div>
 
@@ -500,11 +513,7 @@ export default function RadioComm() {
             Press & Hold or Spacebar
           </div>
 
-          {isPTTActive && (
-            <div className={styles.levelBar}>
-              <div className={styles.levelFill} style={{ width: `${localLevel}%` }}></div>
-            </div>
-          )}
+          <WaveformBars level={localLevel} isActive={isPTTActive} />
         </div>
 
         <div className={styles.localPanel}>
@@ -518,9 +527,12 @@ export default function RadioComm() {
 
           <div className={styles.localCenter}>
             {isPTTActive ? (
-              <div className={styles.transmittingBadge}>🔴 TRANSMITTING</div>
+              <>
+                <div className={styles.transmittingBadge}>🔴 TRANSMITTING</div>
+                <WaveformBars level={localLevel} isActive={true} />
+              </>
             ) : (
-              <div className={styles.idleBadge}>🔵 STANDBY</div>
+              <div className={styles.standbyBadge}>🔵 STANDBY</div>
             )}
           </div>
 

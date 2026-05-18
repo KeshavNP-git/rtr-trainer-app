@@ -3,7 +3,9 @@ import styles from './PTTControl.module.css';
 import PTTAudioManager from '../utils/PTTAudioManager';
 import WaveformVisualizer from './WaveformVisualizer';
 
-export default function PTTControl({ socket, sessionId, userRole, displayName, otherUserOnline, onTransmitChange }) {
+export default function PTTControl({ socket, roomId, sessionId, userRole, displayName, otherUserOnline, onTransmitChange }) {
+  // Use roomId if available, otherwise fall back to sessionId
+  const identifier = roomId || sessionId;
   const [isTransmitting, setIsTransmitting] = useState(false);
   const [micLevel, setMicLevel] = useState(0);
   const [micFrequencies, setMicFrequencies] = useState([]);
@@ -17,7 +19,7 @@ export default function PTTControl({ socket, sessionId, userRole, displayName, o
 
   useEffect(() => {
     // Initialize PTT Audio Manager
-    const manager = new PTTAudioManager(socket, userRole, sessionId);
+    const manager = new PTTAudioManager(socket, userRole, identifier);
     manager.initAudio().then((success) => {
       if (success) {
         console.log('[PTT] Audio system initialized');
@@ -26,14 +28,14 @@ export default function PTTControl({ socket, sessionId, userRole, displayName, o
     pttManagerRef.current = manager;
 
     // Listen for remote transmission start
-    socket.on('ppt-start', (data) => {
+    socket.on('ptt-start', (data) => {
       if (data.role !== userRole) {
         setRemoteTransmitting(true);
       }
     });
 
     // Listen for audio chunks from other user
-    socket.on('ppt-audio', (data) => {
+    socket.on('ptt-audio', (data) => {
       if (data.from !== userRole && pttManagerRef.current) {
         pttManagerRef.current.playAudioChunk(
           data.audioData,
@@ -43,7 +45,7 @@ export default function PTTControl({ socket, sessionId, userRole, displayName, o
     });
 
     // Listen for remote transmission end
-    socket.on('ppt-end', (data) => {
+    socket.on('ptt-end', (data) => {
       if (data.role !== userRole) {
         setRemoteTransmitting(false);
         setRemoteFrequencies([]);  // Clear frequencies when transmission ends
@@ -59,15 +61,15 @@ export default function PTTControl({ socket, sessionId, userRole, displayName, o
     });
 
     return () => {
-      socket.off('ppt-start');
-      socket.off('ppt-audio');
-      socket.off('ppt-end');
+      socket.off('ptt-start');
+      socket.off('ptt-audio');
+      socket.off('ptt-end');
       socket.off('user-joined');
       if (pttManagerRef.current) {
         pttManagerRef.current.stop();
       }
     };
-  }, [socket, userRole, sessionId]);
+  }, [socket, userRole, identifier]);
 
   const handlePTTMouseDown = async () => {
     if (!otherUserOnline) return;
